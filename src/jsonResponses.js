@@ -30,7 +30,7 @@ const getCardInfo = async (request, response) => {
     try {
       const res = await axios.get(url);
       const { data } = res;
-      respondJSON(request, response, 200, data);
+      return respondJSON(request, response, 200, data);
     } catch (error) {
       console.error(error.response.status);
       if (error.response.status === 400) {
@@ -49,18 +49,15 @@ const getCardInfo = async (request, response) => {
   }
   // allow post request
   if (request.method === 'POST') {
-    const data = [];
+    const params = [];
     request.on('data', (chunk) => {
-      data.push(chunk);
+      params.push(chunk);
     });
     request.on('end', async () => {
-      const {
-        fname, type, num, offset,
-      } = JSON.parse(data);
       try {
-        const res = await axios.get(url);
+        const res = await axios.post(url, params);
         const { data } = res;
-        respondJSON(request, response, 200, data);
+        return respondJSON(request, response, 200, data);
       } catch (error) {
         console.error(error);
         const responseJSON = {
